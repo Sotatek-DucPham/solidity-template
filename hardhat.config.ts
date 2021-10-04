@@ -1,19 +1,21 @@
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-
-import "./tasks/accounts";
-import "./tasks/clean";
-import "./tasks/deploy";
-
-import { resolve } from "path";
-
 import { config as dotenvConfig } from "dotenv";
+import { readdirSync } from "fs";
+import "hardhat-deploy";
+import "hardhat-gas-reporter";
 import { HardhatUserConfig } from "hardhat/config";
 import { NetworkUserConfig } from "hardhat/types";
+import { join, resolve } from "path";
+import "solidity-coverage";
 
 dotenvConfig({ path: resolve(__dirname, "./.env") });
+
+// init typechain for the first time
+try {
+  readdirSync(join(__dirname, "typechain"));
+  require("./tasks");
+} catch {}
 
 const chainIds = {
   goerli: 5,
@@ -25,9 +27,9 @@ const chainIds = {
 };
 
 // Ensure that we have all the environment variables we need.
-const mnemonic: string | undefined = process.env.MNEMONIC;
-if (!mnemonic) {
-  throw new Error("Please set your MNEMONIC in a .env file");
+const deployerPrivateKey: string | undefined = process.env.DEPLOYER_PRIVATE_KEY;
+if (!deployerPrivateKey) {
+  throw new Error("Please set your DEPLOYER_PRIVATE_KEY in a .env file");
 }
 
 const infuraApiKey: string | undefined = process.env.INFURA_API_KEY;
@@ -38,11 +40,7 @@ if (!infuraApiKey) {
 function getChainConfig(network: keyof typeof chainIds): NetworkUserConfig {
   const url: string = "https://" + network + ".infura.io/v3/" + infuraApiKey;
   return {
-    accounts: {
-      count: 10,
-      mnemonic,
-      path: "m/44'/60'/0'/0",
-    },
+    accounts: [`0x${deployerPrivateKey}`],
     chainId: chainIds[network],
     url,
   };
@@ -58,9 +56,6 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      accounts: {
-        mnemonic,
-      },
       chainId: chainIds.hardhat,
     },
     goerli: getChainConfig("goerli"),
@@ -73,6 +68,8 @@ const config: HardhatUserConfig = {
     cache: "./cache",
     sources: "./contracts",
     tests: "./test",
+    deploy: "./deployments/migrations",
+    deployments: "./deployments/artifacts",
   },
   solidity: {
     version: "0.8.7",
@@ -93,6 +90,9 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "typechain",
     target: "ethers-v5",
+  },
+  namedAccounts: {
+    deployer: 0,
   },
 };
 
