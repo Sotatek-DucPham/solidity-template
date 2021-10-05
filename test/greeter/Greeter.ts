@@ -1,28 +1,34 @@
-import hre from "hardhat";
-import { Artifact } from "hardhat/types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-
+import { expect } from "chai";
+import hre from "hardhat";
 import { Greeter } from "../../typechain/Greeter";
-import { Signers } from "../types";
-import { shouldBehaveLikeGreeter } from "./Greeter.behavior";
 
-const { deployContract } = hre.waffle;
+const { deployContract, loadFixture } = hre.waffle;
 
-describe("Unit tests", function () {
-  before(async function () {
-    this.signers = {} as Signers;
-
+describe("Unit tests", () => {
+  let admin: SignerWithAddress;
+  let greeter: Greeter;
+  before(async () => {
     const signers: SignerWithAddress[] = await hre.ethers.getSigners();
-    this.signers.admin = signers[0];
+    admin = signers[0];
   });
 
-  describe("Greeter", function () {
-    beforeEach(async function () {
+  describe("Greeter", () => {
+    const fixture = async () => {
       const greeting: string = "Hello, world!";
-      const greeterArtifact: Artifact = await hre.artifacts.readArtifact("Greeter");
-      this.greeter = <Greeter>await deployContract(this.signers.admin, greeterArtifact, [greeting]);
+      const Greeter = await hre.ethers.getContractFactory("Greeter");
+      return (await Greeter.connect(admin).deploy(greeting)) as Greeter;
+    };
+
+    beforeEach(async () => {
+      greeter = await loadFixture(fixture);
     });
 
-    shouldBehaveLikeGreeter();
+    it("should return the new greeting once it's changed", async () => {
+      expect(await greeter.connect(admin).greet()).to.equal("Hello, world!");
+
+      await greeter.setGreeting("Bonjour, le monde!");
+      expect(await greeter.connect(admin).greet()).to.equal("Bonjour, le monde!");
+    });
   });
 });
