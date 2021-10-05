@@ -17,6 +17,9 @@ template" button at the top of the page.
 
 ### Pre Requisites
 
+- Yarn >= v1.22.15
+- Node.js >= v12.22.6
+
 ```sh
 cp .env.example .env
 ```
