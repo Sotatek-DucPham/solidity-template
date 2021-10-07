@@ -16,7 +16,9 @@ dotenvConfig({ path: resolve(__dirname, "./.env") });
 try {
   readdirSync(join(__dirname, "typechain"));
   require("./tasks");
-} catch {}
+} catch {
+  //
+}
 
 const chainIds = {
   goerli: 5,

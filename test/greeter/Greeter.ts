@@ -3,7 +3,7 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { Greeter } from "../../typechain/Greeter";
 
-const { deployContract, loadFixture } = hre.waffle;
+const { loadFixture } = hre.waffle;
 
 describe("Unit tests", () => {
   let admin: SignerWithAddress;
