@@ -1,4 +1,5 @@
 import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-etherscan";
 import "@typechain/hardhat";
 import { config as dotenvConfig } from "dotenv";
 import { readdirSync } from "fs";
@@ -21,12 +22,19 @@ try {
 }
 
 const chainIds = {
-  goerli: 5,
+  arbitrum: 42161,
+  avalanche: 43114,
+  bsc: 56,
   hardhat: 31337,
-  kovan: 42,
   mainnet: 1,
-  rinkeby: 4,
+  optimism: 10,
+  "polygon-mainnet": 137,
+  "polygon-mumbai": 80001,
   ropsten: 3,
+  kovan: 42,
+  rinkeby: 4,
+  goerli: 5,
+  bsctestnet: 97,
 };
 
 // Ensure that we have all the environment variables we need.
@@ -40,12 +48,26 @@ if (!infuraApiKey) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
 }
 
-function getChainConfig(network: keyof typeof chainIds): NetworkUserConfig {
-  const url: string = "https://" + network + ".infura.io/v3/" + infuraApiKey;
+function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
+  let jsonRpcUrl: string;
+  switch (chain) {
+    case "avalanche":
+      jsonRpcUrl = "https://api.avax.network/ext/bc/C/rpc";
+      break;
+    case "bsc":
+      jsonRpcUrl = "https://bsc-dataseed1.binance.org";
+      break;
+    case "bsctestnet":
+      jsonRpcUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+      break;
+    default:
+      jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
+  }
+
   return {
     accounts: [`0x${deployerPrivateKey}`],
-    chainId: chainIds[network],
-    url,
+    chainId: chainIds[chain],
+    url: jsonRpcUrl,
   };
 }
 
@@ -61,10 +83,18 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: chainIds.hardhat,
     },
+    arbitrum: getChainConfig("arbitrum"),
+    avalanche: getChainConfig("avalanche"),
+    bsc: getChainConfig("bsc"),
+    mainnet: getChainConfig("mainnet"),
+    optimism: getChainConfig("optimism"),
+    "polygon-mainnet": getChainConfig("polygon-mainnet"),
+    "polygon-mumbai": getChainConfig("polygon-mumbai"),
+    rinkeby: getChainConfig("rinkeby"),
     goerli: getChainConfig("goerli"),
     kovan: getChainConfig("kovan"),
-    rinkeby: getChainConfig("rinkeby"),
     ropsten: getChainConfig("ropsten"),
+    bsctestnet: getChainConfig("bsctestnet"),
   },
   paths: {
     artifacts: "./artifacts",
