@@ -110,9 +110,9 @@ compiler version is to add the following fields to your VSCode user settings:
 
 ```json
 {
-  "solidity.compileUsingRemoteVersion": "v0.8.11+commit.d7f03943",
+  "solidity.compileUsingRemoteVersion": "v0.8.13+commit.abaa5c0e",
   "solidity.defaultCompiler": "remote"
 }
 ```
 
-Where of course `v0.8.11+commit.d7f03943` can be replaced with any other version.
+Where of course `v0.8.13+commit.abaa5c0e` can be replaced with any other version.
