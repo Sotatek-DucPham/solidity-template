@@ -48,6 +48,11 @@ if (!infuraApiKey) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
 }
 
+const etherscanApiKey: string | undefined = process.env.ETHERSCAN_API_KEY;
+if (!etherscanApiKey) {
+  throw new Error("Please set your ETHERSCAN_API_KEY in a .env file");
+}
+
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
   let jsonRpcUrl: string;
   switch (chain) {
@@ -121,6 +126,9 @@ const config: HardhatUserConfig = {
   },
   namedAccounts: {
     deployer: 0,
+  },
+  etherscan: {
+    apiKey: etherscanApiKey,
   },
 };
 
