@@ -102,6 +102,14 @@ Deploy the contracts to Hardhat Network:
 $ yarn hardhat --network hardhat deploy
 ```
 
+### Verify source code
+
+Etherscan verify:
+
+```sh
+$ yarn hardhat --network hardhat etherscan-verify --api-key <ETHERSCAN_API_KEY>
+```
+
 ## Syntax Highlighting
 
 If you use VSCode, you can enjoy syntax highlighting for your Solidity code via the
