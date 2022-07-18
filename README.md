@@ -123,4 +123,4 @@ compiler version is to add the following fields to your VSCode user settings:
 }
 ```
 
-Where of course `v0.8.13+commit.abaa5c0e` can be replaced with any other version.
+Where of course `v0.8.15+commit.e14f2714` can be replaced with any other version.
