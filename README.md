@@ -113,14 +113,4 @@ $ yarn hardhat --network hardhat etherscan-verify --api-key <ETHERSCAN_API_KEY>
 ## Syntax Highlighting
 
 If you use VSCode, you can enjoy syntax highlighting for your Solidity code via the
-[vscode-solidity](https://github.com/juanfranblanco/vscode-solidity) extension. The recommended approach to set the
-compiler version is to add the following fields to your VSCode user settings:
-
-```json
-{
-  "solidity.compileUsingRemoteVersion": "v0.8.13+commit.abaa5c0e",
-  "solidity.defaultCompiler": "remote"
-}
-```
-
-Where of course `v0.8.15+commit.e14f2714` can be replaced with any other version.
+[hardhat-solidity](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity) extension.
