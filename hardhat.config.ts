@@ -110,7 +110,7 @@ const config: HardhatUserConfig = {
     deployments: "./deployments/artifacts",
   },
   solidity: {
-    version: "0.8.15",
+    version: "0.8.17",
     settings: {
       // Disable the optimizer when debugging
       // https://hardhat.org/hardhat-network/#solidity-optimizer-support
