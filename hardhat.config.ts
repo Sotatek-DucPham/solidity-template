@@ -22,19 +22,17 @@ try {
 }
 
 const chainIds = {
-  arbitrum: 42161,
+  "arbitrum-mainnet": 42161,
   avalanche: 43114,
   bsc: 56,
   hardhat: 31337,
   mainnet: 1,
-  optimism: 10,
+  "optimism-mainnet": 10,
   "polygon-mainnet": 137,
   "polygon-mumbai": 80001,
-  ropsten: 3,
-  kovan: 42,
-  rinkeby: 4,
   goerli: 5,
-  bsctestnet: 97,
+  chapel: 97,
+  sepolia: 11155111,
 };
 
 // Ensure that we have all the environment variables we need.
@@ -48,11 +46,6 @@ if (!infuraApiKey) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
 }
 
-const etherscanApiKey: string | undefined = process.env.ETHERSCAN_API_KEY;
-if (!etherscanApiKey) {
-  throw new Error("Please set your ETHERSCAN_API_KEY in a .env file");
-}
-
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
   let jsonRpcUrl: string;
   switch (chain) {
@@ -62,8 +55,8 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     case "bsc":
       jsonRpcUrl = "https://bsc-dataseed1.binance.org";
       break;
-    case "bsctestnet":
-      jsonRpcUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+    case "chapel":
+      jsonRpcUrl = "https://data-seed-prebsc-1-s3.binance.org:8545";
       break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
@@ -88,18 +81,16 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: chainIds.hardhat,
     },
-    arbitrum: getChainConfig("arbitrum"),
+    arbitrum: getChainConfig("arbitrum-mainnet"),
     avalanche: getChainConfig("avalanche"),
     bsc: getChainConfig("bsc"),
     mainnet: getChainConfig("mainnet"),
-    optimism: getChainConfig("optimism"),
+    optimism: getChainConfig("optimism-mainnet"),
     "polygon-mainnet": getChainConfig("polygon-mainnet"),
     "polygon-mumbai": getChainConfig("polygon-mumbai"),
-    rinkeby: getChainConfig("rinkeby"),
     goerli: getChainConfig("goerli"),
-    kovan: getChainConfig("kovan"),
-    ropsten: getChainConfig("ropsten"),
-    bsctestnet: getChainConfig("bsctestnet"),
+    sepolia: getChainConfig("sepolia"),
+    chapel: getChainConfig("chapel"),
   },
   paths: {
     artifacts: "./artifacts",
@@ -128,7 +119,16 @@ const config: HardhatUserConfig = {
     deployer: 0,
   },
   etherscan: {
-    apiKey: etherscanApiKey,
+    apiKey: {
+      arbitrumOne: process.env.ARBISCAN_API_KEY || "",
+      avalanche: process.env.SNOWTRACE_API_KEY || "",
+      bsc: process.env.BSCSCAN_API_KEY || "",
+      mainnet: process.env.ETHERSCAN_API_KEY || "",
+      optimisticEthereum: process.env.OPTIMISM_API_KEY || "",
+      polygon: process.env.POLYGONSCAN_API_KEY || "",
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
+      sepolia: process.env.ETHERSCAN_API_KEY || "",
+    },
   },
 };
 
